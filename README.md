@@ -78,10 +78,10 @@ r.init({
   [
     {
       name: ‘helloTable’,
-      indexes: {
+      indexes: [{
         name: ‘location’,
         geo: true,
-      }
+      }]
     },
   ]
 });
@@ -101,11 +101,11 @@ r.init({
   [
     {
       name: ‘helloTable’,
-      indexes: {
+      indexes: [{
         name: ‘location’,
         geo: true,
         multi: true,
-      }
+      }]
     },
   ]
 });
@@ -125,12 +125,12 @@ r.init({
   [
     {
       name: ‘helloTable’,
-      indexes: {
+      indexes: [{
         name: ‘has_location’,
         indexFunction: function (row) {
           return row.hasFields(‘location’);
         },
-      }
+      }]
     },
   ]
 });

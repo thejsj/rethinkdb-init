@@ -1,0 +1,17 @@
+{
+  "name": "rethinkdb-init",
+  "version": "0.0.1",
+  "description": "A plugin for rethinkdb, to bootstrap all database, tables and indexes automatically on init",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rethinkdb",
+    "database",
+    "bootstrap",
+    "init"
+  ],
+  "author": "thejsj",
+  "license": "MIT"
+}
