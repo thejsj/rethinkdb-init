@@ -2,7 +2,7 @@
 
 A RethinkDB driver plugin to bootstrap all databases, tables and indexes on init.
 
-Often times, application code that uses RethinkDB has a significant portion of code meant for creating the database, tables and indexes ([example]()https://github.com/thejsj/image-pin/blob/master/server/db/index.js). This module is meant so that you can pass an object with the required initial state of your database and get a promise/callback for when all the necesary componentes have been added to the database. This removes a lot of boilerplate code from your application code and makes it easier to understand what is needed in the database to run the application.
+Often times, application code that uses RethinkDB has a significant portion of code meant for creating the database, tables and indexes [example](https://github.com/thejsj/image-pin/blob/master/server/db/index.js). This module is meant so that you can pass an object with the required initial state of your database and get a promise/callback for when all the necesary componentes have been added to the database. This removes a lot of boilerplate code from your application code and makes it easier to understand what is needed in the database to run the application.
 
 ## Examples
 
