@@ -13,5 +13,8 @@
     "init"
   ],
   "author": "thejsj",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "q": "^1.2.1"
+  }
 }
