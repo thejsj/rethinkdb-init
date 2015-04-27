@@ -68,6 +68,14 @@ describe('Create Tables', function () {
 
     beforeEach(dropDatabase);
 
+    xit('should throw an error if something other than an array is passes as the second argument', function () {
+
+    });
+
+    xit('should throw an error if something other than an a string or object is append to the tables array', function () {
+
+    });
+
     it('should create tables with passed as strings to the init function', function (done) {
       r.init(connectionOpts, tables)
         .then(function (conn) {
@@ -162,6 +170,14 @@ describe('Create Tables with Indexes', function () {
 
     beforeEach(dropDatabase);
 
+    xit('should throw an error if something other than an array is passes to the `indexes` property', function () {
+
+    });
+
+    xit('should throw an error if something other than a string or object is appended to the `indexes` property array', function () {
+
+    });
+
     it('should create indexes passed as strings', function (done) {
       this.timeout(15000);
       var indexes = [ 'index1', 'index2' ];
@@ -181,16 +197,23 @@ describe('Create Tables with Indexes', function () {
         });
     });
 
-    xit('should throw an error if something other than an array is passes to the `indexes` property', function () {
-
-    });
-
-    xit('should throw an error if something other than a string or object is appended to the `indexes` property array', function () {
-
-    });
-
-    xit('should create indexes passed as strings or objects', function () {
-
+    it('should create indexes passed as strings or objects', function () {
+      this.timeout(15000);
+      var indexes = [ { name: 'index3' }, { name: 'index4' }];
+      var tablesWithObjects = [{ name: 'table_2', indexes: indexes  }];
+      r.init(connectionOpts, tablesWithObjects)
+        .then(function (conn) {
+          r
+            .db(connectionOpts.db)
+            .table('table_2')
+            .indexList()
+            .run(conn)
+            .then(function (indexesResult) {
+              indexes.should.eql([ 'index3', 'index4']);
+              done();
+            })
+            .catch(done);
+        });
     });
 
     xit('should create geo indexes', function () {
