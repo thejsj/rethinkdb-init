@@ -1,14 +1,14 @@
 # RethinkDB Init
 
-A RethinkDB driver plugin to bootstrap all databases, tables and indexes on init.
+Create all RethinkDB databases, tables and indexes automatically through a schema object.
 
-Often times, application code that uses RethinkDB has a significant portion of code meant for creating the database, tables and indexes ([example]()https://github.com/thejsj/image-pin/blob/master/server/db/index.js). This module is meant so that you can pass an object with the required initial state of your database and get a promise/callback for when all the necesary componentes have been added to the database. This removes a lot of boilerplate code from your application code and makes it easier to understand what is needed in the database to run the application.
+Often times, application code that uses RethinkDB has a significant portion of code meant for creating the database, tables and indexes [example](https://github.com/thejsj/image-pin/blob/master/server/db/index.js). This module is meant so that you can pass an object with the required initial state of your database and get a promise/callback for when all the necesary componentes have been added to the database. This removes a lot of boilerplate code from your application code and makes it easier to understand what is needed in the database to run the application.
 
 ## Examples
 
 ### Instantiating database with a table and an index
 
-The first argument is a connection object with `host`, `port`, and `db`. If the `db` doesn’t exist, it will be created automatically. 
+The first argument is a connection object with `host`, `port`, and `db`. If the `db` doesn’t exist, it will be created automatically.
 
 The second argument is an array of tables. Each table can either be a string or an object. If the entry is an object, it must have a `name` property.
 
