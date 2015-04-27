@@ -4,7 +4,7 @@
   "description": "A plugin for rethinkdb, to bootstrap all database, tables and indexes automatically on init",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/mocha/bin/mocha ./test"
   },
   "keywords": [
     "rethinkdb",
@@ -15,6 +15,13 @@
   "author": "thejsj",
   "license": "MIT",
   "dependencies": {
+    "lodash": "^3.7.0",
     "q": "^1.2.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.4",
+    "protolog": "0.0.3",
+    "rethinkdb": "^2.0.0",
+    "should": "^6.0.1"
   }
 }
