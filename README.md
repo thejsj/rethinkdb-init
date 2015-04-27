@@ -27,6 +27,9 @@ r.init({
     },
     ‘address’
   ]
+})
+.then(function (conn) {
+  // All tables and indexes have been created
 });
 ```
 
@@ -49,6 +52,9 @@ r.init({
     ‘yet_another_table’,
     ‘one_last_table’,
   ]
+})
+.then(function (conn) {
+  // All tables and indexes have been created
 });
 ```
 
@@ -72,6 +78,9 @@ r.init({
     },
     ‘anotherTable’
   ]
+})
+.then(function (conn) {
+  // All tables and indexes have been created
 });
 ```
 
@@ -97,6 +106,9 @@ r.init({
       }]
     },
   ]
+})
+.then(function (conn) {
+  // All tables and indexes have been created
 });
 ```
 
@@ -121,6 +133,9 @@ r.init({
       }]
     },
   ]
+})
+.then(function (conn) {
+  // All tables and indexes have been created
 });
 ```
 
@@ -148,6 +163,9 @@ r.init({
       }]
     },
   ]
+})
+.then(function (conn) {
+  // All tables and indexes have been created
 });
 ```
 ### Instantiating  a database with 1 table with a different primaryKey, soft durability, 2 replicas, and 2 shards
@@ -173,6 +191,9 @@ r.init({
       shards: 2
     },
   ]
+})
+.then(function (conn) {
+  // All tables and indexes have been created
 });
 ```
 

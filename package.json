@@ -1,6 +1,6 @@
 {
   "name": "rethinkdb-init",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A plugin for rethinkdb, to bootstrap all database, tables and indexes automatically on init",
   "main": "index.js",
   "scripts": {
