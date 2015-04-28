@@ -197,7 +197,7 @@ describe('Create Tables with Indexes', function () {
         });
     });
 
-    it('should create indexes passed as strings or objects', function () {
+    it('should create indexes passed as strings or objects', function (done) {
       this.timeout(15000);
       var indexes = [ { name: 'index3' }, { name: 'index4' }];
       var tablesWithObjects = [{ name: 'table_2', indexes: indexes  }];
@@ -209,7 +209,7 @@ describe('Create Tables with Indexes', function () {
             .indexList()
             .run(conn)
             .then(function (indexesResult) {
-              indexes.should.eql([ 'index3', 'index4']);
+              indexesResult.should.eql([ 'index3', 'index4']);
               done();
             })
             .catch(done);

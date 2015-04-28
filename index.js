@@ -30,7 +30,7 @@ var rethinkdbInit = function (r) {
      if (index.name === undefined) throw new TypeError('index entry object in table schema must have a `name` property');
      var opts = _.pick(index, ['multi', 'geo']);
      return r.db(db).table(table.name)
-       .indexCreate(table.name, table.indexFunction, opts)
+       .indexCreate(index.name, index.indexFunction, opts)
        .run(conn)
        .catch(existsHandler);
     });
