@@ -68,12 +68,43 @@ describe('Create Tables', function () {
 
     beforeEach(dropDatabase);
 
-    xit('should throw an error if something other than an array is passes as the second argument', function () {
-
+    it('should throw an error if something other than an object is passed as the first argument', function (done) {
+      r.init('not-an-object', ['table1'])
+        .then(done)
+        .catch(function (err) {
+          err.name.should.equal('TypeError');
+          err.message.indexOf('object').should.not.equal(-1);
+          done();
+        });
     });
 
-    xit('should throw an error if something other than an a string or object is append to the tables array', function () {
+    it('should throw an error if something other than an array is passes as the second argument', function (done) {
+      r.init(connectionOpts, 'table1')
+        .then(done)
+        .catch(function (err) {
+          err.name.should.equal('TypeError');
+          err.message.indexOf('array').should.not.equal(-1);
+          done();
+        });
+    });
 
+    it('should throw an error if something other than an a string or object is append to the tables array', function (done) {
+      r.init(connectionOpts, [null, 1, 3])
+        .then(done)
+        .catch(function (err) {
+          err.name.should.equal('TypeError');
+          err.message.toLowerCase().indexOf('string').should.not.equal(-1);
+        })
+        .then(function () {
+          // Test numbers
+          return r.init(connectionOpts, [3])
+            .then(done)
+            .catch(function (err) {
+              err.name.should.equal('TypeError');
+              err.message.toLowerCase().indexOf('object').should.not.equal(-1);
+              done();
+            });
+        });
     });
 
     it('should create tables with passed as strings to the init function', function (done) {
@@ -170,12 +201,26 @@ describe('Create Tables with Indexes', function () {
 
     beforeEach(dropDatabase);
 
-    xit('should throw an error if something other than an array is passes to the `indexes` property', function () {
-
+    it('should throw an error if something other than an array is passes to the `indexes` property', function (done) {
+      var tablesWithObjects = { name: 'table_2', indexes: 'not-an-array'};
+      r.init(connectionOpts, tablesWithObjects)
+        .then(done)
+        .catch(function (err) {
+          err.name.should.equal('TypeError');
+          err.message.toLowerCase().indexOf('array').should.not.equal(-1);
+          done();
+        });
     });
 
-    xit('should throw an error if something other than a string or object is appended to the `indexes` property array', function () {
-
+    it('should throw an error if something other than a string or object is appended to the `indexes` property array', function (done) {
+      var tablesWithObjects = [{ name: 'table_2', indexes: 'not-an-array'}];
+      r.init(connectionOpts, tablesWithObjects)
+        .then(done)
+        .catch(function (err) {
+          err.name.should.equal('TypeError');
+          err.message.toLowerCase().indexOf('array').should.not.equal(-1);
+          done();
+        });
     });
 
     it('should create indexes passed as strings', function (done) {

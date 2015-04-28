@@ -8,6 +8,16 @@ var rethinkdbInit = function (r) {
   if (typeof r !== 'function') throw new TypeError('r must be a RethinkDB instance. Passed instances is a `' + (typeof r) + '`');
 
   /*!
+   * Returns true only if object is not `null` and is not an array
+   * @param <Any>
+   * @return <Boolean>
+   */
+  var isRealObject = function (value) {
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) return true;
+    return false;
+  };
+
+  /*!
    * Throws an error if the error given is not an `already exists` error
    * @param <Error>
    */
@@ -47,7 +57,7 @@ var rethinkdbInit = function (r) {
    */
   var mapTables = function (schema, db, conn) {
     return schema.map(function (table) {
-      if (typeof table !== 'object' && typeof table !== 'string') throw new TypeError('table entry in schema must be `Object` or `String`');
+      if (!isRealObject(table) && typeof table !== 'string') throw new TypeError('table entry in schema must be `Object` or `String`');
       if (typeof table === 'string') return r.db(db).tableCreate(table).run(conn).catch(existsHandler);
       if (table.name === undefined) throw new TypeError('table entry object in schema must have a `name` property');
       var options = _.pick(table, ['primaryKey', 'durability', 'shards', 'replicas', 'primaryReplicaTag']);
@@ -70,26 +80,28 @@ var rethinkdbInit = function (r) {
    */
   var init = function (connection, schema) {
     // Connection must be an object and have a db, host, and port
-    if (typeof connection !== 'object') throw new TypeError('Connection object must by an object.');
-    if (typeof connection.db !== 'string') throw new TypeError('Connection object must have a db property. rethinkdb-init won\'t add tables to the `test` database unless explicitly declared');
-    if (!Array.isArray(schema)) throw new TypeError('Schema argument must be an array.');
-    var db = connection.db;
-    return r.connect(connection)
-     .then(function (conn) {
-       return r.dbCreate(db).run(conn)
-         .catch(existsHandler)
-         .then(function () {
-           return conn;
-         });
-     })
-     .then(function (conn) {
-       // Take an array of tables and create all tables
-       // Create all indexes
-       return q.all(mapTables(schema, db, conn))
-         .then(function () {
-            return conn;
-         });
-     });
+    return q().then(function () {
+      if (!isRealObject(connection)) throw new TypeError('Connection object must be an object.');
+      if (typeof connection.db !== 'string') throw new TypeError('Connection object must have a db property. rethinkdb-init won\'t add tables to the `test` database unless explicitly declared');
+      if (!Array.isArray(schema)) throw new TypeError('Schema argument must be an array.');
+      var db = connection.db;
+      return r.connect(connection)
+       .then(function (conn) {
+         return r.dbCreate(db).run(conn)
+           .catch(existsHandler)
+           .then(function () {
+             return conn;
+           });
+       })
+       .then(function (conn) {
+         // Take an array of tables and create all tables
+         // Create all indexes
+         return q.all(mapTables(schema, db, conn))
+           .then(function () {
+              return conn;
+           });
+       });
+    });
   };
 
   // Attach `init` function to RethinkDB instance

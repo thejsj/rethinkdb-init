@@ -4,7 +4,7 @@
   "description": "Create all RethinkDB databases, tables and indexes automatically through a schema object",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha ./test"
+    "test": "./node_modules/mocha/bin/mocha --bail ./test"
   },
   "keywords": [
     "rethinkdb",
