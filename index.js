@@ -31,7 +31,8 @@ var rethinkdbInit = function (r) {
      var opts = _.pick(index, ['multi', 'geo']);
      return r.db(db).table(table.name)
        .indexCreate(table.name, table.indexFunction, opts)
-       .run(conn);
+       .run(conn)
+       .catch(existsHandler);
     });
   };
 
