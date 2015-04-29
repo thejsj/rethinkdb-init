@@ -197,7 +197,7 @@ describe('Create Tables with Indexes', function () {
         });
     });
 
-    it('should create indexes passed as strings or objects', function () {
+    it('should create indexes passed as strings or objects', function (done) {
       this.timeout(15000);
       var indexes = [ { name: 'index3' }, { name: 'index4' }];
       var tablesWithObjects = [{ name: 'table_2', indexes: indexes  }];
@@ -209,7 +209,7 @@ describe('Create Tables with Indexes', function () {
             .indexList()
             .run(conn)
             .then(function (indexesResult) {
-              indexes.should.eql([ 'index3', 'index4']);
+              indexesResult.should.eql([ 'index3', 'index4']);
               done();
             })
             .catch(done);
@@ -220,12 +220,43 @@ describe('Create Tables with Indexes', function () {
 
     });
 
-    xit('should create multi indexes', function () {
+    it('should create multi indexes', function (done) {
+      this.timeout(15000);
+      var indexes = [ { name: 'index5', multi: true }];
+      var tablesWithObjects = [{ name: 'table_2', indexes: indexes  }];
+      r.init(connectionOpts, tablesWithObjects)
+        .then(function (conn) {
+          r
+            .db(connectionOpts.db)
+            .table('table_2')
+            .indexList()
+            .run(conn)
+            .then(function (indexesResult) {
+              indexesResult.should.eql(['index5'])
+              done();
+            })
+            .catch(done);
+        });
 
     });
 
-    xit('should create function indexes', function () {
-
+    it('should create function indexes', function (done) {
+      this.timeout(15000);
+      var indexes = [ { name: 'index5', indexFunction: function(){return true} }];
+      var tablesWithObjects = [{ name: 'table_2', indexes: indexes  }];
+      r.init(connectionOpts, tablesWithObjects)
+        .then(function (conn) {
+          r
+            .db(connectionOpts.db)
+            .table('table_2')
+            .indexList()
+            .run(conn)
+            .then(function (indexesResult) {
+              indexesResult.should.eql(['index5'])
+              done();
+            })
+            .catch(done);
+        });
     });
 
   });
