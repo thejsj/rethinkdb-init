@@ -1,6 +1,6 @@
 {
   "name": "rethinkdb-init",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Create all RethinkDB databases, tables and indexes automatically through a schema object",
   "main": "index.js",
   "scripts": {

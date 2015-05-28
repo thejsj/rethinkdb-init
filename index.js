@@ -38,7 +38,7 @@ var rethinkdbInit = function (r) {
      if (typeof index !== 'object' && typeof index !== 'string') throw new TypeError('index entry in table entry must be `Object` or `String`');
      if (typeof index === 'string') return r.db(db).table(table.name).indexCreate(index).run(conn).catch(existsHandler);
      if (index.name === undefined) throw new TypeError('index entry object in table schema must have a `name` property');
-     var opts = []
+     var opts = [];
      if (index.indexFunction) opts.push(index.indexFunction);
      if (index.multi || index.geo) opts.push(_.pick(index, ['multi', 'geo']));
      return r.db(db).table(table.name)
@@ -57,8 +57,12 @@ var rethinkdbInit = function (r) {
    */
   var mapTables = function (schema, db, conn) {
     return schema.map(function (table) {
-      if (!isRealObject(table) && typeof table !== 'string') throw new TypeError('table entry in schema must be `Object` or `String`');
-      if (typeof table === 'string') return r.db(db).tableCreate(table).run(conn).catch(existsHandler);
+      if (!isRealObject(table) && typeof table !== 'string') {
+        throw new TypeError('table entry in schema must be `Object` or `String`');
+      }
+      if (typeof table === 'string') {
+        return r.db(db).tableCreate(table).run(conn).catch(existsHandler);
+      }
       if (table.name === undefined) throw new TypeError('table entry object in schema must have a `name` property');
       var options = _.pick(table, ['primaryKey', 'durability', 'shards', 'replicas', 'primaryReplicaTag']);
       return r.db(db).tableCreate(table.name, options).run(conn)

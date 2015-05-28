@@ -1,5 +1,6 @@
 require('should');
 var r = require('rethinkdb');
+var _ = require('lodash');
 var init = require('../')(r);
 var log = require('protolog')();
 
@@ -261,13 +262,51 @@ describe('Create Tables with Indexes', function () {
         });
     });
 
-    xit('should create geo indexes', function () {
+    it('should create geo indexes', function () {
+      this.timeout(15000);
+      var indexes = [{ name: 'location', geo: true }];
+      var tablesWithObjects = [{ name: 'table_9', indexes: indexes }];
+      r.init(connectionOpts, tablesWithObjects)
+        .then(function (conn) {
+          return r
+            .db(connectionOpts.db)
+            .table('table_9')
+            .indexList()
+            .run(conn)
+            .then(function (indexesResult) {
+              indexesResult.should.eql(['location']);
+            })
+            .then(function () {
+              return r.db(connectionOpts.db).table('table_9')
+                .insert([
+                  { name: 'carlos', location: r.point(-122, 35.0001) },
+                  { name: 'jorge', location: r.point(-122, 35.0002) },
+                  { name: 'peter', location: r.point(-122, 35.0003) },
+                  { name: 'john', location: r.point(-122, 35.0004) },
+                  { name: 'matt', location: r.point(-122, 35.0005) },
+                ])
+                .run(conn);
+            })
+            .then(function () {
+              return r.db(connectionOpts.db).table('table_9')
+                .getNearest(r.point(-122, 35), { index: 'location' })
+                .coerceTo('array')
+                .map(r.row('doc'))
+                .run(conn)
+                .then(function (result) {
+                  var names = _.pluck(result, 'name');
+                  names.should.eql(['carlos', 'jorge', 'peter', 'john', 'matt']);
+                });
+            })
+            .catch(done);
+        });
+
 
     });
 
     it('should create multi indexes', function (done) {
       this.timeout(15000);
-      var indexes = [ { name: 'index5', multi: true }];
+      var indexes = [ { name: 'vals', multi: true }];
       var tablesWithObjects = [{ name: 'table_2', indexes: indexes  }];
       r.init(connectionOpts, tablesWithObjects)
         .then(function (conn) {
@@ -277,8 +316,39 @@ describe('Create Tables with Indexes', function () {
             .indexList()
             .run(conn)
             .then(function (indexesResult) {
-              indexesResult.should.eql(['index5'])
-              done();
+              indexesResult.should.eql(['vals']);
+            })
+            .then(function () {
+              return r.db(connectionOpts.db).table('table_2')
+                .insert([
+                  { name: 'jorge', vals: [1, 2, 3] },
+                  { name: 'carlos', vals: [1, 5, 11] },
+                  { name: 'peter', vals: [4, 5, 6] },
+                  { name: 'john', vals: [4, 5, 6, 7] },
+                  { name: 'matt', vals: 4 },
+                ])
+                .run(conn);
+            })
+            .then(function () {
+              return r.db(connectionOpts.db).table('table_2')
+                .getAll(1, { index: 'vals' })
+                .coerceTo('array')
+                .run(conn)
+                .then(function (result) {
+                  var names = _.pluck(result, 'name');
+                  names.sort().should.eql(['jorge', 'carlos'].sort());
+                });
+            })
+            .then(function () {
+              return r.db(connectionOpts.db).table('table_2')
+                .getAll(4, { index: 'vals' })
+                .coerceTo('array')
+                .run(conn)
+                .then(function (result) {
+                  var names = _.pluck(result, 'name');
+                  names.sort().should.eql(['peter', 'john', 'matt'].sort());
+                  done();
+                });
             })
             .catch(done);
         });
@@ -287,7 +357,7 @@ describe('Create Tables with Indexes', function () {
 
     it('should create function indexes', function (done) {
       this.timeout(15000);
-      var indexes = [ { name: 'index5', indexFunction: function(){return true} }];
+      var indexes = [ { name: 'index6', indexFunction: function (row) { return row('a').add(row('b')); } }];
       var tablesWithObjects = [{ name: 'table_2', indexes: indexes  }];
       r.init(connectionOpts, tablesWithObjects)
         .then(function (conn) {
@@ -297,8 +367,29 @@ describe('Create Tables with Indexes', function () {
             .indexList()
             .run(conn)
             .then(function (indexesResult) {
-              indexesResult.should.eql(['index5'])
-              done();
+              indexesResult.should.eql(['index6']);
+            })
+            .then(function () {
+              return r
+                .db(connectionOpts.db).table('table_2')
+                .insert([
+                  { a: 0, b: 2, name: 'one' },
+                  { a: 1, b: 5, name: 'three' },
+                  { a: 3, b: 1, name: 'two' }
+                ])
+                .run(conn);
+            })
+            .then(function () {
+              return r
+                .db(connectionOpts.db).table('table_2')
+                .orderBy({ 'index': r.desc('index6') })
+                .coerceTo('array')
+                .run(conn)
+                .then(function (result) {
+                  var names = _.pluck(result, 'name');
+                  names.should.eql(['three', 'two', 'one']);
+                  done();
+                });
             })
             .catch(done);
         });
