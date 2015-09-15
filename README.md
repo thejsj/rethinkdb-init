@@ -13,19 +13,19 @@ The first argument is a connection object with `host`, `port`, and `db`. If the 
 The second argument is an array of tables. Each table can either be a string or an object. If the entry is an object, it must have a `name` property.
 
 ```javascript
-var r = require(‘rethinkdb’);
-require(‘rethinkdb-init’)(r);
+var r = require('rethinkdb');
+require('rethinkdb-init')(r);
 
 r.init({
-    host: ‘localhost’,
+    host: 'localhost',
     port: 28015,
-    db: ‘superDatabase’
+    db: 'superDatabase'
   }, [
     {
-      name: ‘person’,
-      indexes: [‘firstName’, ‘lastName’]
+      name: 'person',
+      indexes: ['firstName', 'lastName']
     },
-    ‘address’
+    'address'
   ]
 })
 .then(function (conn) {
@@ -38,19 +38,19 @@ r.init({
 When the array contains a string, a table will be added with that name.
 
 ```javascript
-var r = require(‘rethinkdb’);
-require(‘rethinkdb-init’)(r);
+var r = require('rethinkdb');
+require('rethinkdb-init')(r);
 
 r.init({
-    host: ‘localhost’,
+    host: 'localhost',
     port: 28015,
-    db: ‘helloDatabase’
+    db: 'helloDatabase'
   },
   [
-    ‘hello_table’,
-    ‘another_table’,
-    ‘yet_another_table’,
-    ‘one_last_table’,
+    'hello_table',
+    'another_table',
+    'yet_another_table',
+    'one_last_table',
   ]
 })
 .then(function (conn) {
@@ -63,20 +63,20 @@ r.init({
 Table objects can contain indexes (which can also be strings or objects).
 
 ```javascript
-var r = require(‘rethinkdb’);
-require(‘rethinkdb-init’)(r);
+var r = require('rethinkdb');
+require('rethinkdb-init')(r);
 
 r.init({
-    host: ‘localhost’,
+    host: 'localhost',
     port: 28015,
-    db: ‘helloDatabase’
+    db: 'helloDatabase'
   },
   [
     {
-      name: ‘helloTable’,
-      indexes: [‘superIndex’, ‘superDuperIndex’]
+      name: 'helloTable',
+      indexes: ['superIndex', 'superDuperIndex']
     },
-    ‘anotherTable’
+    'anotherTable'
   ]
 })
 .then(function (conn) {
@@ -89,19 +89,19 @@ r.init({
 You can add a `geo` or `multi` attribute along with an index and it will be passed along to the [`indexCreate`](http://rethinkdb.com/api/javascript/index_create/) function.
 
 ```javascript
-var r = require(‘rethinkdb’);
-require(‘rethinkdb-init’)(r);
+var r = require('rethinkdb');
+require('rethinkdb-init')(r);
 
 r.init({
-    host: ‘localhost’,
+    host: 'localhost',
     port: 28015,
-    db: ‘helloDatabase’
+    db: 'helloDatabase'
   },
   [
     {
-      name: ‘helloTable’,
+      name: 'helloTable',
       indexes: [{
-        name: ‘location’,
+        name: 'location',
         geo: true,
       }]
     },
@@ -115,19 +115,19 @@ r.init({
 ### Instantiating a database with 1 tables and 1 multi+geo index
 
 ```javascript
-var r = require(‘rethinkdb’);
-require(‘rethinkdb-init’)(r);
+var r = require('rethinkdb');
+require('rethinkdb-init')(r);
 
 r.init({
-    host: ‘localhost’,
+    host: 'localhost',
     port: 28015,
-    db: ‘helloDatabase’
+    db: 'helloDatabase'
   },
   [
     {
-      name: ‘helloTable’,
+      name: 'helloTable',
       indexes: [{
-        name: ‘location’,
+        name: 'location',
         geo: true,
         multi: true,
       }]
@@ -144,21 +144,21 @@ r.init({
 You can add a `indexFunction` attribute along with an index and it will be passed along to the [`indexCreate`](http://rethinkdb.com/api/javascript/index_create/) function.
 
 ```javascript
-var r = require(‘rethinkdb’);
-require(‘rethinkdb-init’)(r);
+var r = require('rethinkdb');
+require('rethinkdb-init')(r);
 
 r.init({
-    host: ‘localhost’,
+    host: 'localhost',
     port: 28015,
-    db: ‘helloDatabase’
+    db: 'helloDatabase'
   },
   [
     {
-      name: ‘helloTable’,
+      name: 'helloTable',
       indexes: [{
-        name: ‘has_location’,
+        name: 'has_location',
         indexFunction: function (row) {
-          return row.hasFields(‘location’);
+          return row.hasFields('location');
         },
       }]
     },
@@ -174,19 +174,19 @@ You can pass a `primaryKey`, `durability`, `replicas`, or `shards` attribute to 
 
 
 ```javascript
-var r = require(‘rethinkdb’);
-require(‘rethinkdb-init’)(r);
+var r = require('rethinkdb');
+require('rethinkdb-init')(r);
 
 r.init({
-    host: ‘localhost’,
+    host: 'localhost',
     port: 28015,
-    db: ‘helloDatabase’
+    db: 'helloDatabase'
   },
   [
     {
-      name: ‘helloTable’,
-      primaryKey: ‘location’,
-      durability: ‘soft’
+      name: 'helloTable',
+      primaryKey: 'location',
+      durability: 'soft'
       replicas: 2,
       shards: 2
     },
@@ -196,4 +196,3 @@ r.init({
   // All tables and indexes have been created
 });
 ```
-
