@@ -22,7 +22,7 @@ var rethinkdbInit = function (r) {
    * @param <Error>
    */
   var existsHandler = function (err) {
-    if (err.name === 'ReqlOpFailedError' && err.msg.indexOf('already exists')) return;
+    if (err.name === 'ReqlOpFailedError' && (err.msg || err.message).indexOf('already exists')) return;
     throw err;
   };
 
@@ -35,16 +35,20 @@ var rethinkdbInit = function (r) {
    */
   var mapIndexes = function (table, db, conn) {
     return table.indexes.map(function (index) {
-     if (typeof index !== 'object' && typeof index !== 'string') throw new TypeError('index entry in table entry must be `Object` or `String`');
-     if (typeof index === 'string') return r.db(db).table(table.name).indexCreate(index).run(conn).catch(existsHandler);
-     if (index.name === undefined) throw new TypeError('index entry object in table schema must have a `name` property');
-     var opts = [];
-     if (index.indexFunction) opts.push(index.indexFunction);
-     if (index.multi || index.geo) opts.push(_.pick(index, ['multi', 'geo']));
-     return r.db(db).table(table.name)
-       .indexCreate(index.name, opts[0], opts[1])
-       .run(conn)
-       .catch(existsHandler);
+      if (typeof index !== 'object' && typeof index !== 'string') throw new TypeError('index entry in table entry must be `Object` or `String`');
+      if (typeof index === 'string') return r.db(db).table(table.name).indexCreate(index).run(conn).catch(existsHandler);
+      if (index.name === undefined) throw new TypeError('index entry object in table schema must have a `name` property');
+      var opts = [];
+      if (index.indexFunction) opts.push(index.indexFunction);
+      if (index.multi || index.geo) opts.push(_.pick(index, ['multi', 'geo']));
+
+      return r.db(db).table(table.name)
+        .indexCreate(index.name, opts[0], opts[1])
+        .run(conn)
+        .catch(existsHandler)
+        .then(function () {
+          return r.db(db).table(table.name).indexWait().run(conn);
+        });
     });
   };
 
@@ -94,16 +98,11 @@ var rethinkdbInit = function (r) {
          return r.dbCreate(db).run(conn)
            .catch(existsHandler)
            .then(function () {
-             return conn;
-           });
-       })
-       .then(function (conn) {
-         // Take an array of tables and create all tables
-         // Create all indexes
-         return q.all(mapTables(schema, db, conn))
-           .then(function () {
-              return conn;
-           });
+             // Take an array of tables and create all tables
+             // Create all indexes
+             return q.all(mapTables(schema, db, conn));
+           })
+           .return(conn);
        });
     });
   };
