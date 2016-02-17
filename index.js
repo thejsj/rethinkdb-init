@@ -45,10 +45,7 @@ var rethinkdbInit = function (r) {
       return r.db(db).table(table.name)
         .indexCreate(index.name, opts[0], opts[1])
         .run(conn)
-        .catch(existsHandler)
-        .then(function () {
-          return r.db(db).table(table.name).indexWait().run(conn);
-        });
+        .catch(existsHandler);
     });
   };
 
@@ -76,6 +73,9 @@ var rethinkdbInit = function (r) {
           if (table.indexes === undefined) return true;
           if (!Array.isArray(table.indexes)) throw new TypeError('Table indexes attribute should be an Array.');
           return q.all(mapIndexes(table, db, conn));
+        })
+        .then(function () {
+          return r.db(db).table(table.name).indexWait().run(conn);
         });
     });
   };
