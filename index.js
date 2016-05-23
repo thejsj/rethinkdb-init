@@ -23,6 +23,7 @@ var rethinkdbInit = function (r) {
    */
   var existsHandler = function (err) {
     if (err.name === 'ReqlOpFailedError' && (err.msg || err.message).indexOf('already exists')) return;
+    if (err.name === 'RqlRuntimeError' && (err.msg || err.message).indexOf('already exists')) return;
     throw err;
   };
 
