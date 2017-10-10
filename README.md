@@ -29,7 +29,7 @@ r.init({
     },
     'address'
   ]
-})
+)
 .then(function (conn) {
   // All tables and indexes have been created
 });
@@ -54,7 +54,7 @@ r.init({
     'yet_another_table',
     'one_last_table',
   ]
-})
+)
 .then(function (conn) {
   // All tables and indexes have been created
 });
@@ -80,7 +80,7 @@ r.init({
     },
     'anotherTable'
   ]
-})
+)
 .then(function (conn) {
   // All tables and indexes have been created
 });
@@ -108,7 +108,7 @@ r.init({
       }]
     },
   ]
-})
+)
 .then(function (conn) {
   // All tables and indexes have been created
 });
@@ -135,7 +135,7 @@ r.init({
       }]
     },
   ]
-})
+)
 .then(function (conn) {
   // All tables and indexes have been created
 });
@@ -165,11 +165,44 @@ r.init({
       }]
     },
   ]
-})
+)
 .then(function (conn) {
   // All tables and indexes have been created
 });
 ```
+
+### Instantiating a database with 1 table with a compound index and a simple index
+
+You can use the `indexFunction` attribute as mentioned above to also create compound indexes.
+
+```javascript
+var r = require('rethinkdb')
+require('rethinkdb-init')(r)
+
+r.init(
+  {
+    host: 'localhost',
+    port: 28015,
+    db: 'helloDatabase'
+  },
+  [
+    {
+      name: 'users',
+      indexes: [
+        {
+          name: 'full_name',
+          indexFunction: [r.row('last_name'), r.row('first_name')]
+        }
+      ]
+    }
+  ]
+)
+.then(function(conn) {
+  // All tables and indexes have been created
+})
+
+```
+
 ### Instantiating  a database with 1 table with a different primaryKey, soft durability, 2 replicas, and 2 shards
 
 You can pass a `primaryKey`, `durability`, `replicas`, or `shards` attribute to a table and it will be passed along to the [`tableCreate`](http://rethinkdb.com/api/javascript/table_create/) function.
@@ -193,7 +226,7 @@ r.init({
       shards: 2
     },
   ]
-})
+)
 .then(function (conn) {
   // All tables and indexes have been created
 });
