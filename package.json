@@ -15,15 +15,15 @@
   "author": "thejsj",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^3.7.0",
+    "lodash": "^4.17.21",
     "q": "^1.2.1"
   },
   "devDependencies": {
-    "mocha": "^2.2.4",
+    "mocha": "^10.0.0",
     "rethinkdb": "^2.0.0",
     "rethinkdbdash": "^2.2.17",
     "should": "^6.0.1",
-    "standard": "^7.1.2"
+    "standard": "^17.0.0"
   },
   "repository": {
     "type": "git",
